@@ -1,0 +1,15 @@
+*.pyc
+*.env
+
+### Virtual Environment ###
+env/*
+venv/*
+
+### Django Migrations ###
+core/__pychache__/*
+*/migrations/*
+core/*/__pycache__/*
+core/settings.py
+
+### node_modules ###
+static/webpack/node_modules
