@@ -11518,3 +11518,8 @@ html {
     margin-left: 1rem;
     margin-right: 1rem;
 }
+
+/********** Custom Styling **********/
+.error {
+  color: red;
+}
