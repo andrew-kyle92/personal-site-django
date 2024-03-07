@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.views import View
 
 import datetime
 from dateutil.relativedelta import relativedelta
@@ -11,7 +12,7 @@ from .models import send_email
 # Create your views here.
 def index(request):
     title = "Home | Andrew Kyle's Personal Site"
-    template = "index.html"
+    template = "personalsite/index.html"
     dob = datetime.datetime(1992, 1, 29)
     preset_date = datetime.datetime.today()
     it_start = datetime.datetime(2016, 5, 12)
@@ -25,15 +26,20 @@ def index(request):
     if request.method == "POST":
         form = ContactForm(request.POST)
         if form.is_valid():
-            email_data = {
-                "name": form.cleaned_data["name"],
-                "phone_number": form.cleaned_data["phone_number"],
-                "email": form.cleaned_data["email"],
-                "message": form.cleaned_data["message"],
-            }
-            send_email(email_data)
-            messages.add_message(request, messages.SUCCESS, "Message was successfully sent")
-            return redirect(f"/#contact")
+            if form.cleaned_data["hidden_input"] != "":
+                redirect("index")
+                # re-instantiating the form so that the fields are blank
+                form = ContactForm()
+            else:
+                email_data = {
+                    "name": form.cleaned_data["name"],
+                    "phone_number": form.cleaned_data["phone_number"],
+                    "email": form.cleaned_data["email"],
+                    "message": form.cleaned_data["message"],
+                }
+                send_email(email_data)
+                messages.add_message(request, messages.SUCCESS, "Message was successfully sent")
+                return redirect(f"/#contact")
     else:
         form = ContactForm()
 
@@ -46,6 +52,25 @@ def index(request):
     }
 
     return render(request, template, context)
+
+
+class EmailView(View):
+    @staticmethod
+    def get(request, message_data=None):
+        title = "Email Template | Andrew Kyle's"
+        template = "personalsite/email-template2.html"
+        if not message_data:
+            message_data = {
+                "name": "Andrew Kyle",
+                "email": "andrewkyle@andrewkyle.dev",
+                "phone_number": "520-243-0047",
+                "message": "Test message",
+            }
+        context = {
+            "title": title,
+            "message_data": message_data,
+        }
+        return render(request, template, context)
 
 
 # def send_message(request):
