@@ -7,7 +7,6 @@ from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('captcha/', include('captcha.urls')),
     # path('send-mail/', views.send_message, name='send-mail'),
     path('', views.index, name='index'),
     path('email/', views.EmailView.as_view(), name='email'),
